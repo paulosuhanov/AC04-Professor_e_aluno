@@ -39,34 +39,41 @@ def alunos():
 def alunoPorId(nAluno):
     if request.method == "DELETE":
         for al in dados["alunos"]:
-            if al['id'] == request.json['id']:
+            if al['id'] == nAluno:
                 dados["alunos"].remove(al)
-        return jsonify(dados['alunos'])
+                return jsonify(dados['alunos'])
+        for al in dados["alunos"]:
+            if al['id'] != nAluno:
+                return {"erro": "aluno nao encontrado"}, 400
     for item in dados['alunos']:
             if item["id"] == nAluno:
                 if request.method == "GET":
                     return item
                 if request.method == "PUT":
-                    if request.json["nome"] == "":
-                        return {'erro':'aluno sem nome'}, 400
-                    item["nome"] = request.json["nome"]
-                    return item    
-    return {"erro": "aluno nao encontrado"}, 400
-        
-        
+                    try:
+                        if request.json["nome"] == "":
+                            return {'erro':'aluno sem nome'}, 400
+                        item["nome"] = request.json["nome"]
+                        return item
+                    except KeyError:
+                        return {"erro": "aluno sem nome"}, 400    
+    return {"erro": "aluno nao encontrado"}, 400     
 
 '''atende em /alunos, verbo POST'''
 @app.route("/alunos", methods=["POST"])
 def cria_aluno():
-    dict = request.json #request.json representa um arquivo json enviado ao servidor
-    if dict['nome'] == '':
-        return {'erro':'aluno sem nome'}, 400
-    for item in dados["alunos"]:
-        if item['id'] == dict['id']:
-            return {'erro':'id ja utilizada'}, 400
-    # nosso servidor recebeu um arquivo e colocou nessa variavel
-    dados['alunos'].append(dict)
-    return jsonify(dados['alunos'])
+    try:
+        dict = request.json #request.json representa um arquivo json enviado ao servidor
+        if dict['nome'] == '':
+            return {'erro':'aluno sem nome'}, 400
+        for item in dados["alunos"]:
+            if item['id'] == dict['id']:
+                return {'erro':'id ja utilizada'}, 400
+        # nosso servidor recebeu um arquivo e colocou nessa variavel
+        dados['alunos'].append(dict)
+        return jsonify(dados['alunos'])
+    except KeyError:
+        return {"erro": "aluno sem nome"}, 400
 
 @app.route("/reseta", methods=["POST"])
 def resete():
@@ -92,16 +99,22 @@ def professorPorId(nProf):
         for al in dados["professores"]:            
             if al['id'] == nProf:
                 dados["professores"].remove(al)
-        return jsonify(dados['professores'])
+                return jsonify(dados['professores'])
+        for al in dados["alunos"]:
+            if al['id'] != nProf:
+                return {"erro": "professor nao encontrado"}, 400
     for item in dados['professores']:
             if item["id"] == nProf:
                 if request.method == "GET":
                     return item
                 if request.method == "PUT":
-                    if request.json["nome"] == "":
-                        return {'erro':'professor sem nome'}, 400
-                    item["nome"] = request.json["nome"]
-                    return item    
+                    try:
+                        if request.json["nome"] == "":
+                            return {'erro':'professor sem nome'}, 400
+                        item["nome"] = request.json["nome"]
+                        return item
+                    except KeyError:
+                        return {"erro": "professor sem nome"}, 400    
     return {"erro": "professor nao encontrado"}, 400
         
         
@@ -109,16 +122,18 @@ def professorPorId(nProf):
 '''atende em /alunos, verbo POST'''
 @app.route("/professores", methods=["POST"])
 def cria_professor():
-    dict = request.json #request.json representa um arquivo json enviado ao servidor
-    if dict['nome'] == '':
-        return {'erro':'professor sem nome'}, 400
-    for item in dados["professores"]:
-        if item['id'] == dict['id']:
-            return {'erro':'id ja utilizada'}, 400
-    # nosso servidor recebeu um arquivo e colocou nessa variavel
-    dados['professores'].append(dict)
-    return jsonify(dados['professores'])
-
+    try:
+        dict = request.json #request.json representa um arquivo json enviado ao servidor
+        if dict['nome'] == '':
+            return {'erro':'professor sem nome'}, 400
+        for item in dados["professores"]:
+            if item['id'] == dict['id']:
+                return {'erro':'id ja utilizada'}, 400
+        # nosso servidor recebeu um arquivo e colocou nessa variavel
+        dados['professores'].append(dict)
+        return jsonify(dados['professores'])
+    except KeyError:
+        return {"erro": "professor sem nome"}, 400
 
 if __name__ == '__main__':
         app.run(host = 'localhost', port = 5002, debug = True)
