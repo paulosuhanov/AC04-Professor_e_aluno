@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ac04-professor_e_aluno"
+version = "0.1.0"
+description = ""
+authors = ["Paulo Suhanov <paulo.suhanov@icloud.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Flask = "^2.1.2"
+
+[tool.poetry.dev-dependencies]
+requests = "^2.27.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
